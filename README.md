@@ -45,32 +45,69 @@ Here after what it does :
 ssh_populate_assume_role.tpl
 
 #!/bin/bash
+
 KST=(`aws sts assume-role --role-arn "${assume_role_arn}" --role-session-name $(hostname) --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --output text`)
-export AWS_ACCESS_KEY_ID=$${KST[0]}; export AWS_SECRET_ACCESS_KEY=$${KST[1]}; export AWS_SESSION_TOKEN=$${KST[2]}
+
+export AWS_ACCESS_KEY_ID=$${KST[0]}; 
+
+export AWS_SECRET_ACCESS_KEY=$${KST[1]};
+
+export AWS_SESSION_TOKEN=$${KST[2]}
+
 aws eks update-kubeconfig --region region-code --name cluster-nom
 
 5- In ordrer to enable IAM role access to EKS cluster aws_auth configmap have to be updated also with the provided role :
+
+https://github.com/chiheb-bs/EKSRemoteSupport/blob/d1a7ab43bd039a372f73ac4272d1eafef85b495d/prod/main-eks.tf
+
   aws_auth_configmap_yaml = <<-EOT
   ${chomp(module.eks.aws_auth_configmap_yaml)}
+  
       - rolearn: ${module.eks_managed_node_group.iam_role_arn}
+      
         username: system:node:{{EC2PrivateDNSName}}
+        
         groups:
+        
           - system:bootstrappers
+          
           - system:nodes
+          
       - rolearn: ${module.self_managed_node_group.iam_role_arn}
+      
         username: system:node:{{EC2PrivateDNSName}}
+        
         groups:
+        
           - system:bootstrappers
+          
           - system:nodes
+          
       - rolearn: ${module.fargate_profile.fargate_profile_arn}
+      
         username: system:node:{{SessionName}}
+        
         groups:
+        
           - system:bootstrappers
+          
           - system:nodes
+          
           - system:node-proxier
+          
       - rolearn: ${module.ssh-bastion-service.assume_role_arn}
+      
         username: system:node:{{EC2PrivateDNSName}}
+        
         groups:
+        
           - system:bootstrappers
+          
           - system:nodes
+          
   EOT
+
+
+
+
+
