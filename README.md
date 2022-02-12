@@ -4,10 +4,13 @@ Provide secure access to aws eks based on bastion and using specific provided ro
 # Use 
 
 1- Specify the role to be used 
+
 prod/terraform.tfvars :
+
 assume_role_arn = "arn:aws:iam::11122223333:user/designated_user"
 
 2- Update prod/main-eks.tf with the node group details you want to use.
+
 Exp 
   eks_managed_node_groups = {
     blue = {}
@@ -24,8 +27,11 @@ blue node group will use eks_managed_node_group_defaults  default settings.
 gree node group will use its proper settings.
 
 3- Go to prod/stage folder and issue :
+
 terraform init
+
 terraform plan
+
 terraform apply
 
 # How it Works
