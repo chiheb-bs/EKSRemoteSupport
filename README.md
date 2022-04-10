@@ -29,9 +29,7 @@ gree node group will use its proper settings.
 3- Go to prod/stage folder and issue :
 
 terraform init
-
 terraform plan
-
 terraform apply
 
 # How it Works
