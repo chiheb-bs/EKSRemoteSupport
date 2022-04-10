@@ -37,8 +37,11 @@ terraform apply
 # How it Works
 
 1- Remote users updates their public keys in AWS IAM console
+
 2- ssh to Bastion is passwordless
+
 3- Bastion fetchs user details : public key and iam user and creates a container to hold the ssh session.
+
 4- In bastion,  sshd_worker container fetchs  AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY and AWS_SESSION_TOKEN and create kubeconfig file accordingly.
 
 Here after what it does :
